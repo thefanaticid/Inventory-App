@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../globals.css'
-import { ClerkProvider } from '@clerk/nextjs'
 import { Topbar } from '@/components/shared/Topbar'
 import Buttombar from '@/components/shared/Buttombar'
 import { LeftSidebar } from '@/components/shared/LeftSidebar'
@@ -20,7 +19,6 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
       <html lang="en">
         <body className={`${inter.className} bg-gray-50`}>
           <Topbar />
@@ -36,6 +34,5 @@ export default function RootLayout({
           <Buttombar />
         </body>
       </html>
-    </ClerkProvider>
-  )
+      )
 }

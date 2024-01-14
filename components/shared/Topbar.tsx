@@ -1,5 +1,3 @@
-import { SignOutButton, SignedIn, OrganizationSwitcher } from '@clerk/nextjs'
-
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -12,7 +10,7 @@ export const Topbar = () => {
                 <p className="text-heading3-bold text-dark max-xs:hidden">Barokah Inventory</p>
             </Link>
             
-            <div className="flex items-center gap-1">
+            {/* <div className="flex items-center gap-1">
                 <div className="block md:hidden">
                     <SignedIn>
                         <SignOutButton>
@@ -36,7 +34,7 @@ export const Topbar = () => {
                         }
                     }
                 />
-            </div>
+            </div> */}
         </nav>
     )
 }
