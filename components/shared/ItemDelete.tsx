@@ -11,53 +11,47 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
-import { DropdownMenuItem } from  "@/components/ui/dropdown-menu"
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import Link from "next/link";
+import { SetStateAction, useState } from "react";
+
 
 interface Props {
-    id: number;
+    id: number
+    isOpen: boolean
+    onChangeOpen: (open: boolean) => void;
+
 }
 
-const ItemDelete = ({ id }: Props) => {
-    const router = useRouter() ;
-    const { toast } = useToast()
-    const [open, setopen] = useState(false);
+const ItemDelete = ({ id, isOpen, onChangeOpen }: Props) => {
+  
+  const router = useRouter() ;
+  const { toast } = useToast()
 
-    const handleAlertChange = () => {
-        setopen(!open);
-    };
-
-    const handleDelete = async (id: number) => {
-        const response = await fetch(`http://localhost:3000/api/item/${id}`,
-          {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-          }) ;
-          
-          if(response.ok) {
-            setopen(false);
-    
-            router.refresh() ;
-    
-          } else {
-            toast({
-              title: "Opss",
-              description: "Something wrong",
-              variant: 'destructive'
-            })
-          }
-    }
-
+  const handleDelete = async (id: number) => {
+      const response = await fetch(`http://localhost:3000/api/item/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        }) ;
+        
+        if(response.ok) {
+          isOpen = false;
+  
+          router.refresh() ;
+  
+        } else {
+          toast({
+            title: "Opss",
+            description: "Something wrong",
+            variant: 'destructive'
+          })
+        }
+  }
     return (
-        <AlertDialog open={open} onOpenChange={handleAlertChange} >
-          <AlertDialogTrigger asChild>
-            <Link href={''}>Delete</Link>
-          </AlertDialogTrigger>
+        <AlertDialog open={isOpen} onOpenChange={onChangeOpen}  >
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

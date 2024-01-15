@@ -57,8 +57,6 @@ export function DataTable<TData, TValue>({
     <div>
         <div className="flex justify-between items-center py-4">
             <ItemInsert />
-
-            {/* <Button className="bg-red-600 hover:bg-red-700 text-white">Add new item</Button> */}
             <Input
             placeholder="Filter names..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}

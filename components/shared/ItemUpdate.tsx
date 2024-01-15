@@ -6,20 +6,23 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '../ui/use-toast';
 import * as z from 'zod' ;
 import { Button } from '../ui/button';
+import { DropdownMenuItem } from '../ui/dropdown-menu';
 
 interface Props {
     item: {
-      id: number;
-      name: string;
-      min: number;
-      max: number;
-      stock: number;
-      unit: Unit;
+      id: number
+      name: string
+      min: number
+      max: number
+      stock: number
+      unit: Unit
     }
+    onChangeOpen: (open: boolean) => void
+    isOpen: boolean
 };
 
-const ItemUpdate = ({ item }: Props) => {    
-    
+const ItemUpdate = ({ item, isOpen, onChangeOpen }: Props) => {    
+    console.log({ from: 'ItemUpdate', ...item })
     async function updateHandle(values : z.infer<typeof itemValidation>) {
         const response = await fetch(`http://localhost:3000/api/item/${item.id}`,
         {
@@ -36,14 +39,11 @@ const ItemUpdate = ({ item }: Props) => {
           })
         }) ;
 
-        console.log(item.id, values)
         return response; 
     }
 
   return (
-    <Item btnTitle='Update item' item={item} submitHandler={updateHandle}>
-        <Link href={''}>Edit</Link>
-    </Item>
+    <Item isOpen={isOpen} handleOpenChange={onChangeOpen} btnTitle='Update item' item={item} submitHandler={updateHandle} />
   )
 }
 

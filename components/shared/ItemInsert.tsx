@@ -4,8 +4,10 @@ import {  itemValidation } from '@/lib/validations/item';
 
 import * as z from 'zod' ;
 import { Button } from '../ui/button';
+import { Dialog, DialogTrigger } from '../ui/dialog';
 
-const ItemInsert = () => {    
+const ItemInsert = () => { 
+    const [open, setOpen] = useState(false) ;
     async function insertHandle(values : z.infer<typeof itemValidation>) {
         console.log(values);
 
@@ -28,9 +30,12 @@ const ItemInsert = () => {
     }
 
   return (
-    <Item btnTitle='Add new item' submitHandler={insertHandle}>
-        <Button className="bg-red-600 hover:bg-red-700 text-white">Add new Item</Button>
-    </Item>
+    <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+            <Button className="bg-red-600 hover:bg-red-700 text-white">Add new item</Button>
+        </DialogTrigger>
+        <Item isOpen={open} handleOpenChange={setOpen} btnTitle='Add new item' submitHandler={insertHandle} />
+    </Dialog>
   )
 }
 
