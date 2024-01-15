@@ -66,7 +66,7 @@ export const authOption: NextAuthOptions = {
             ...session,
             user: {
               ...session.user,
-              username: token.username
+              username: token.username,
             }
           }
         },

@@ -1,6 +1,6 @@
 import * as z from 'zod' ;
 
-enum Unit {
+export enum Unit {
     kg = "kg",
     box = "box",
     gram = "gram",
@@ -10,8 +10,13 @@ enum Unit {
 
 export const itemValidation = z.object({
     name: z.string().min(1),
-    min: z.number().nonnegative(),
-    max: z.number().nonnegative(),
-    stock: z.number().nonnegative(),
+    min: z.coerce.number().nonnegative(),
+    max: z.coerce.number().nonnegative(),
+    stock: z.coerce.number().nonnegative(),
     unit: z.nativeEnum(Unit)
-});
+})
+.refine((data) => data.max > data.min, {
+    path: ['max'],
+    message: 'Max should be gratter than min'
+} )
+;

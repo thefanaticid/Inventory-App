@@ -8,17 +8,29 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ReactNode } from "react"
+import { ReactNode, FC, useState } from "react"
 
-const Modal = ( children : ReactNode ) => {
+
+interface ModalProps {
+    children: ReactNode
+}
+
+const [open, setopen] = useState(false);
+
+const handleDialogChange = () => {
+    setopen(!open);
+  };
+
+const Modal : FC<ModalProps> = ( { children } ) => {
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={handleDialogChange}>
             <DialogTrigger asChild>
                 <Button variant="outline">Edit Profile</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
+                    <DialogTitle>Edit profile</DialogTitle>
                 <DialogDescription>
                     Make changes to your profile here. Click save when you're done.
                 </DialogDescription>

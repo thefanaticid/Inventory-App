@@ -5,10 +5,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { sidebarLinks } from "@/constants";
+import SignOutButton from "./SignOutButton";
 
 export const LeftSidebar = () => {
     const router = useRouter();
     const pathname = usePathname();
+
 
     return (
         <section className='custome-scrollbar leftsidebar'>
@@ -40,6 +42,8 @@ export const LeftSidebar = () => {
             </div>
 
             <div className='mt-10 px-6'>
+                <SignOutButton />
+               
                 {/* <SignedIn>
                 <SignOutButton signOutCallback={() => router.push("/sign-in")}>
                     <div className='flex cursor-pointer gap-4 p-4'>

@@ -1,39 +1,24 @@
 import { Item, columns } from "./columns"
 import { DataTable } from "./data-table"
  
+// async function getData(): Promise<Item[]> {
 async function getData(): Promise<Item[]> {
   // Fetch data from your API here.
-  return [
-    {
-      id: "1",
-      name: "Beras",
-      min: 10,
-      max: 100,
-      unit: "kg",
-      stock: 24
+  const response = await fetch('http://localhost:3000/api/item',
+  {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
     },
-    {
-      id: "2",
-      name: "Gula pasir",
-      min: 10,
-      max: 50,
-      unit: "kg",
-      stock: 31
-    },
-    {
-      id: "3",
-      name: "Gula aren",
-      min: 10,
-      max: 70,
-      unit: "kg",
-      stock: 67
-    },
-    
-  ]
+    cache:"no-cache"
+  }) ;
+  const result = await response.json() ;
+
+  return result.data ;
 }
 
 const page = async () => {
-  const data = await getData()
+  const data = await getData();
 
   return (
     <section>

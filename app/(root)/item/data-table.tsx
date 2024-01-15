@@ -22,7 +22,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
-
+import Item from "@/components/forms/Item"
+import ItemInsert from "@/components/shared/ItemInsert"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -55,7 +56,9 @@ export function DataTable<TData, TValue>({
   return (
     <div>
         <div className="flex justify-between items-center py-4">
-            <Button className="bg-red-600 hover:bg-red-700 text-white">Add new item</Button>
+            <ItemInsert />
+
+            {/* <Button className="bg-red-600 hover:bg-red-700 text-white">Add new item</Button> */}
             <Input
             placeholder="Filter names..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}

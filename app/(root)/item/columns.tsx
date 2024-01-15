@@ -15,15 +15,18 @@ import {
     ChevronDownIcon,
     DotsHorizontalIcon,
 } from "@radix-ui/react-icons"
+import ItemDelete from "@/components/shared/ItemDelete"
+import ItemUpdate from "@/components/shared/ItemUpdate"
+import { Unit } from "@/lib/validations/item"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Item = {
-  id: string
+  id: number
   name: string
   min: number
   max: number
-  unit: string
+  unit: Unit
   stock: number
 }
 
@@ -77,7 +80,7 @@ export const columns: ColumnDef<Item>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
+      const item = row.original
  
       return (
         <DropdownMenu>
@@ -90,9 +93,10 @@ export const columns: ColumnDef<Item>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Detail</DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <ItemUpdate item={item} />
+            <DropdownMenuItem>
+              <ItemDelete id={item.id} />
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

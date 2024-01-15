@@ -35,7 +35,7 @@ const Login = () => {
       const loginData = await signIn('credentials', {
         username: values.username,
         password: values.password,
-        redirect: false,
+        redirect: false
       }) ;
 
       if(loginData?.error) {
