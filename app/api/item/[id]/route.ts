@@ -42,6 +42,21 @@ export async function PUT(req: Request, { params }: { params: { id: number } }) 
 export async function DELETE(req: Request, { params }: { params: { id: number } }) {
     try {
         const { id } = params ;
+
+        // Delete DetailOrder records
+        await db.detailOrder.deleteMany({
+            where: {
+                itemId: parseInt(`${id}`)
+            }
+        });
+        
+        // Delete Stock records
+        await db.stock.deleteMany({
+            where: {
+             itemId: parseInt(`${id}`)
+            }
+        });
+
         const itemDeleted = await db.item.delete({
             where: { id: parseInt(`${id}`) },
         }) ;

@@ -2,26 +2,39 @@ import { db } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOption } from "@/lib/auth";
-import { stockValidation } from "@/lib/validations/stock";
-import { NextApiRequest } from "next";
+import { stockFormSchema } from "@/lib/validations/stock";
 
-export async function POST() {
+export async function GET() {
     try {
-        const items = await db.stock.findMany();
+        const stocks = await db.stock.findMany({
+            include: {
+                item: {
+                    select: {
+                        name: true
+                    }
+                }
+            },
+        });
 
-        return NextResponse.json({data: items, status: true}, {status: 200}) ;
+        return NextResponse.json({data: stocks, status: true}, {status: 200}) ;
     } catch(error) {
         return NextResponse.json({status: false, error : error }, {status: 500}) ;
     }
 }
 
-export async function GET(req: Request) {
-    const session = await getServerSession(authOption) ;
-    return NextResponse.json({data: session?.user.id}) ;
+export async function POST(req: Request) {
     try {
-        const session = await getServerSession(authOption) ;
+        // const session = await getServerSession(authOption) ;
+        const session = {
+            user: {
+                id: '1'
+            }
+        } ;
         const body = await req.json() ;
-        const {item, stock } = stockValidation.parse(body) ; 
+        
+        body.dateIn = new Date(body.dateIn) ;
+
+        const {item, stock, dateIn } = stockFormSchema.parse(body) ; 
 
         // Start a transaction
         const result = await db.$transaction([
@@ -29,20 +42,21 @@ export async function GET(req: Request) {
             db.stock.create({
                 data: {
                     itemId: item,
-                    createdBy: session?.user.id ? parseInt(session?.user.id) : 0,
+                    createdBy: parseInt(session?.user.id) ,
                     stockIn: stock,
+                    dateIn: dateIn
                 }
             }),
 
             // Update related Item's stock attribute
             db.item.update({
-            where: { id: item },
-                data: {
-                    stock: {
-                        increment: stock,
-                    },
-                }
-            }),
+                where: { id: item },
+                    data: {
+                        stock: {
+                            increment: stock,
+                        },
+                    }
+                }),
         ]);
   
   

@@ -1,28 +1,25 @@
-"use client"
 
 import React, { useState } from 'react'
-import {  ItemFormType } from '@/lib/validations/item';
 
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import ItemForm from '../forms/ItemForm';
+import { StockFormType } from '@/lib/validations/stock';
+import StockForm from '../forms/StockForm';
 
-const DialogItemInsert = () => { 
+const DialogStockInsert = () => { 
     const [open, setOpen] = useState(false) ;
 
-    async function insertHandler(values : ItemFormType) {
-        const response = await fetch('http://localhost:3000/api/item',
+    async function insertHandler(values : StockFormType) {
+        const response = await fetch('http://localhost:3000/api/stock',
         {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name: values.name,
-                min: values.min,
-                max: values.max,
+                item: values.item,
                 stock: values.stock,
-                unit: values.unit,
+                dateIn: values.dateIn
             })
         });
 
@@ -32,15 +29,15 @@ const DialogItemInsert = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-            <Button className="bg-red-600 hover:bg-red-700 text-white">Add new item</Button>
+            <Button className="bg-red-600 hover:bg-red-700 text-white">Add new stock</Button>
         </DialogTrigger>
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Form add Item</DialogTitle>
+                <DialogTitle>Form add stock</DialogTitle>
             </DialogHeader>
-            <ItemForm 
+            <StockForm 
                 submitHandler={insertHandler}
-                btnTitle='Add new item'
+                btnTitle='Add new stock'
                 showActionToggle={setOpen}
             />
         </DialogContent>
@@ -49,4 +46,4 @@ const DialogItemInsert = () => {
   )
 }
 
-export default DialogItemInsert
+export default DialogStockInsert

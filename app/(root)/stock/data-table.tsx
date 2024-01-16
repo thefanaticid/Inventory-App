@@ -22,6 +22,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
+import DataTablePagination from "@/components/shared/TablePagination"
+import DialogStockInsert from "@/components/dialogs/DialogStockInsert"
 
 
 interface DataTableProps<TData, TValue> {
@@ -55,12 +57,12 @@ export function DataTable<TData, TValue>({
   return (
     <div>
         <div className="flex justify-between items-center py-4">
-            <Button className="bg-red-600 hover:bg-red-700 text-white">Add new stock</Button>
+            <DialogStockInsert />
             <Input
             placeholder="Filter items..."
-            value={(table.getColumn("item")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("item.name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-                table.getColumn("item")?.setFilterValue(event.target.value)
+                table.getColumn("item.name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
             />
@@ -109,26 +111,7 @@ export function DataTable<TData, TValue>({
                 </TableBody>
             </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="space-x-2">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    Next
-                </Button>
-            </div>
-        </div>
+        <DataTablePagination table={table} />
     </div>
   )
 }

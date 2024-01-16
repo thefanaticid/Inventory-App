@@ -40,16 +40,19 @@ model Order {
   createdBy Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  detail DetailOrder[]
 }
 
 model DetailOrder {
   id    Int     @id @default(autoincrement())
   name  String
+  orderId Int 
   itemId  Int
   quantity Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   item   Item @relation(fields: [itemId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
 }
 
 model Stock {
@@ -57,7 +60,7 @@ model Stock {
   itemId  Int
   createdBy Int
   stockIn Int
-  date DateTime @default(now())
+  dateIn DateTime @default(now()) 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user   User @relation(fields: [createdBy], references: [id])

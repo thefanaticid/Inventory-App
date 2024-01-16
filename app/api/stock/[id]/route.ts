@@ -1,6 +1,6 @@
 import { authOption } from "@/lib/auth";
 import { db } from "@/lib/prisma";
-import { stockValidation } from "@/lib/validations/stock";
+import { stockFormSchema } from "@/lib/validations/stock";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -10,7 +10,14 @@ export async function GET(req: Request, { params }: { params: { id: number } }) 
         const { id } = params ;
 
         const stock = await db.stock.findFirstOrThrow({
-            where: { id: parseInt(`${id}`) }
+            where: { id: parseInt(`${id}`) },
+            include: {
+                item: {
+                    select: {
+                        name: true
+                    }
+                }
+            },
         })
 
         return NextResponse.json({data: stock, status: true}, {status: 200}) ;
@@ -21,39 +28,53 @@ export async function GET(req: Request, { params }: { params: { id: number } }) 
 
 export async function PUT(req: Request, { params }: { params: { id: number } }) {
     try {
-        const session = await getServerSession(authOption) ;
+        // const session = await getServerSession(authOption) ;
+        const session = {
+            user: {
+                id: '1'
+            }
+        };
+
         const { id } = params ;
         const body = await req.json() ;
-        const {item, stock} = stockValidation.parse(body) ; 
+        body.dateIn = new Date(body.dateIn) ;
+
+        const {item, stock, dateIn} = stockFormSchema.parse(body) ; 
 
         // Start a transaction
         const result = await db.$transaction([
             db.stock.findFirstOrThrow({
-                where: { id: id },
-                
+                select: {
+                    item: {
+                        select: {
+                            stock: true
+                        }
+                    },
+                    stockIn: true,
+                },
+                where: { id: parseInt(`${id}`) },        
             }),
-            // Insert new Stock record
+            // Update stock record
             db.stock.update({
-                where : { id: id },
+                where : { id: parseInt(`${id}`) },
                 data: {
                     itemId: item,
-                    createdBy: session?.user.id ? parseInt(session?.user.id) : 0,
+                    createdBy: parseInt(session?.user.id) ,
+                    dateIn: dateIn,
                     stockIn: stock,
                 }
             }),
         ]);
         
+        const newStock = (result[0].item.stock - result[0].stockIn)  + result[1].stockIn ;
         await db.item.update( {
             where: {id: item },
             data: {
-                stock: {
-                    decrement: result[0].stockIn,
-                    increment: result[1].stockIn,
-                },
+                stock: newStock
             }
         }) ;
 
-        return NextResponse.json({data: result[0], status: true}, {status: 200}) ;
+        return NextResponse.json({data: result[1], status: true}, {status: 200}) ;
     } catch(error) {
         return NextResponse.json({status: false, error : error }, {status: 500}) ;
     }
@@ -64,7 +85,7 @@ export async function DELETE(req: Request, { params }: { params: { id: number } 
         const { id } = params ;
 
         const stockDeleted= await db.stock.delete({
-            where : { id: id },
+            where : { id: parseInt(`${id}`) },
         }) ;
 
         // Update related Item's stock attribute
