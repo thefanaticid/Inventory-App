@@ -1,5 +1,5 @@
 import { db } from "@/lib/prisma";
-import { itemValidation } from "@/lib/validations/item";
+import { itemFormSchema } from "@/lib/validations/item";
 import { NextResponse } from "next/server";
  
 export async function GET(req: Request, { params }: { params: { id: number } }) {
@@ -20,7 +20,7 @@ export async function PUT(req: Request, { params }: { params: { id: number } }) 
     try {
         const { id } = params ;
         const body = await req.json() ;
-        const {name, min, max, stock, unit} = itemValidation.parse(body) ; 
+        const {name, min, max, stock, unit} = itemFormSchema.parse(body) ; 
 
         const itemUpdated = await db.item.update({
             where: { id: parseInt(`${id}`) },

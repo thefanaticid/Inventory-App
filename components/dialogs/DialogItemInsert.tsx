@@ -1,16 +1,14 @@
 import React, { useState } from 'react'
-import Item from '../forms/Item'
-import {  itemValidation } from '@/lib/validations/item';
+import {  ItemFormType } from '@/lib/validations/item';
 
-import * as z from 'zod' ;
 import { Button } from '../ui/button';
-import { Dialog, DialogTrigger } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+import ItemForm from '../forms/ItemForm';
 
-const ItemInsert = () => { 
+const DialogItemInsert = () => { 
     const [open, setOpen] = useState(false) ;
-    async function insertHandle(values : z.infer<typeof itemValidation>) {
-        console.log(values);
 
+    async function insertHandler(values : ItemFormType) {
         const response = await fetch('http://localhost:3000/api/item',
         {
             method: 'POST',
@@ -34,9 +32,19 @@ const ItemInsert = () => {
         <DialogTrigger asChild>
             <Button className="bg-red-600 hover:bg-red-700 text-white">Add new item</Button>
         </DialogTrigger>
-        <Item isOpen={open} handleOpenChange={setOpen} btnTitle='Add new item' submitHandler={insertHandle} />
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Form add Item</DialogTitle>
+            </DialogHeader>
+            <ItemForm 
+                submitHandler={insertHandler}
+                btnTitle='Add new item'
+                showActionToggle={setOpen}
+            />
+        </DialogContent>
+        {/* <Item isOpen={open} handleOpenChange={setOpen} btnTitle='Add new item' submitHandler={insertHandle} /> */}
     </Dialog>
   )
 }
 
-export default ItemInsert
+export default DialogItemInsert

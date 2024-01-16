@@ -1,6 +1,5 @@
 import { db } from "@/lib/prisma";
-import { itemValidation } from "@/lib/validations/item";
-import { NextApiRequest } from "next";
+import { itemFormSchema } from "@/lib/validations/item";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -16,7 +15,7 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const body = await req.json() ;
-        const {name, min, max, stock, unit} = itemValidation.parse(body) ; 
+        const {name, min, max, stock, unit} = itemFormSchema.parse(body) ; 
 
         const newItem = await db.item.create({
             data: {

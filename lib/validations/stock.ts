@@ -2,14 +2,14 @@ import * as z from 'zod' ;
 import { db } from '../prisma';
 
 
-export const stockValidation = z.object({
-    item: z.number().nonnegative()
-    .refine(async (data) => {
+export const stockFormSchema = z.object({
+    item: z.coerce.number().nonnegative().refine(async (data) => {
         const check = await db.item.findUnique({where: {id: data}}) ;
 
         return !check ? false : true ;
     }, { path: ['item'], message: 'Item invalid' }),
-    stock: z.number().nonnegative(),
+    stock: z.coerce.number().nonnegative(),
+    date: z.date()
 })
 .refine(async (data) => {
     const item = await db.item.findUnique({where: { id: data.item }}) ;

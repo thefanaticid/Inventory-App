@@ -15,12 +15,13 @@ import {
     ChevronDownIcon,
     DotsHorizontalIcon,
 } from "@radix-ui/react-icons"
-import ItemDelete from "@/components/shared/ItemDelete"
+import ItemDelete from "@/components/dialogs/DialogItemDelete"
 import ItemUpdate from "@/components/shared/ItemUpdate"
 import { Unit } from "@/lib/validations/item"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import Item from "@/components/forms/Item"
+import Item from "@/components/forms/ItemForm"
 import { useState } from "react"
+import { DataTableRowActions } from "./data-table-row-actions"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -82,38 +83,6 @@ export const columns: ColumnDef<Item>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const item = row.original ;
-      const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-      const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false)
-
-      return (
-        <>
-          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <DotsHorizontalIcon className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {/* <ItemUpdate item={item} /> */}
-                <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setIsDeleteAlertOpen(true)}>
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <ItemUpdate isOpen={isEditDialogOpen} onChangeOpen={setIsEditDialogOpen} item={item} />
-        </Dialog>
-        <ItemDelete isOpen={isDeleteAlertOpen} onChangeOpen={setIsDeleteAlertOpen} id={item.id} />
-      </>
-      )
-    }
+    cell: ({ row }) => <DataTableRowActions row={row}/>
     }
 ]
