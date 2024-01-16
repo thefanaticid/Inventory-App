@@ -42,7 +42,7 @@ export async function POST(req: Request) {
             db.stock.create({
                 data: {
                     itemId: item,
-                    createdBy: parseInt(session?.user.id) ,
+                    createdBy: parseInt(session.user.id ?? '1') ,
                     stockIn: stock,
                     dateIn: dateIn
                 }

@@ -59,12 +59,12 @@ export function DataTable<TData, TValue>({
         <div className="flex justify-between items-center py-4">
             <DialogStockInsert />
             <Input
-            placeholder="Filter items..."
-            value={(table.getColumn("item.name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-                table.getColumn("item.name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
+                placeholder="Filter items..."
+                value={(table.getColumn("item")?.getFilterValue() as string) ?? ""}
+                onChange={(event) =>
+                    table.getColumn("item")?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm"
             />
         </div>
         <div className="rounded-md border bg-white">

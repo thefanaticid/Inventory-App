@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
+import DialogOrderInsert from "@/components/dialogs/DialogOrderInsert"
 
 
 interface DataTableProps<TData, TValue> {
@@ -55,14 +56,14 @@ export function DataTable<TData, TValue>({
   return (
     <div>
         <div className="flex justify-between items-center py-4">
-            <Button className="bg-red-600 hover:bg-red-700 text-white">Add new order</Button>
+            <DialogOrderInsert />
             <Input
-            placeholder="Filter buyers..."
-            value={(table.getColumn("buyer")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-                table.getColumn("buyer")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
+                placeholder="Filter buyers..."
+                value={(table.getColumn("buyer")?.getFilterValue() as string) ?? ""}
+                onChange={(event) =>
+                    table.getColumn("buyer")?.setFilterValue(event.target.value)
+                }
+                className="max-w-sm"
             />
         </div>
         <div className="rounded-md border bg-white">

@@ -29,12 +29,7 @@ export const columns: ColumnDef<StockType>[] = [
   {
     accessorKey: "dateIn",
     header: "Date",
-    cell: ({ row }) => {
-      
-
-      return format(row.getValue('dateIn'), "PPP") ;
-
-    }
+    cell: ({ row }) =>  format(row.getValue('dateIn'), "PPP") 
   },
   {
     accessorKey: "stockIn",

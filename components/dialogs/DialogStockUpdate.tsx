@@ -33,7 +33,7 @@ const DialogStockUpdate =  ({ stock, showActionToggle }: EditProps) => {
 
     <div>
         <DialogHeader>
-            <DialogTitle>Form Edit Item</DialogTitle>
+            <DialogTitle>Form Edit Stock</DialogTitle>
         </DialogHeader>
         <StockForm 
             stock={stock}

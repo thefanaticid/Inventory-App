@@ -12,18 +12,20 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
     CaretSortIcon,
-    ChevronDownIcon,
     DotsHorizontalIcon,
 } from "@radix-ui/react-icons"
+import { format } from "date-fns"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Order = {
   id: string
   buyer: string
+  order: {
+    item: string
+    qty: number
+  }[],
   date: Date,
-  item: string,
-  qty: number
 }
 
 export const columns: ColumnDef<Order>[] = [
@@ -44,6 +46,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "date",
     header: "Date",
+    cell: ({ row }) =>  format(row.getValue('date'), "PPP") 
   },
   {
     id: "actions",

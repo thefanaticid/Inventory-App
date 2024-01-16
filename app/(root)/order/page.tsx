@@ -6,10 +6,37 @@ async function getData(): Promise<Order[]> {
   return [
     {
       id: "728ed52f",
-      buyer: "Jin kazama",
-      item: "Beras",
+      buyer: "Faldito",
       date: new Date(),
-      qty: 10
+      order: [
+        {
+          item: 'Gula',
+          qty: 2
+        },
+        {
+          item: 'Beras',
+          qty: 11
+        },
+        {
+          item: 'Cuka',
+          qty: 11
+        },
+      ] 
+    },
+    {
+      id: "728ed52f",
+      date: new Date(),
+      buyer: "Syabil",
+      order: [
+        {
+          item: 'Mie',
+          qty: 10
+        },
+        {
+          item: 'Cuka',
+          qty: 9
+        },
+      ] 
     },
     
   ]
