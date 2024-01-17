@@ -8,26 +8,27 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
-    AlertDialogTitle
+    AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
-import { StockType } from "@/app/(root)/stock/schema";
+import { OrderType } from "@/app/(root)/order/schema";
 
 
 interface Props {
     isOpen: boolean
     showActionToggle: (open: boolean) => void
-    stock: StockType
+    order: OrderType
+
 }
 
-const DialogStockDelete = ({ isOpen, showActionToggle, stock }: Props) => {
+const DialogOrderDelete = ({ isOpen, showActionToggle, order }: Props) => {
   
   const router = useRouter() ;
   const { toast } = useToast()
 
   const handleDelete = async (id: number) => {
-      const response = await fetch(`http://localhost:3000/api/stock/${id}`,
+      const response = await fetch(`http://localhost:3000/api/order/${id}`,
         {
           method: 'DELETE',
           headers: {
@@ -55,12 +56,12 @@ const DialogStockDelete = ({ isOpen, showActionToggle, stock }: Props) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-            This action cannot be undone. You are about to delete this stock
+            This action cannot be undone. You are about to delete order of <b>{order.buyer}</b>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(stock.id)}>Continue</AlertDialogAction>
+            <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(order.id)}>Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -68,4 +69,4 @@ const DialogStockDelete = ({ isOpen, showActionToggle, stock }: Props) => {
     
 }
 
-export default DialogStockDelete
+export default DialogOrderDelete

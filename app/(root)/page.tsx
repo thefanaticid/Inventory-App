@@ -1,4 +1,4 @@
-import { CardAlertStock } from "@/components/cards/alertstock";
+import { CardAlertStock } from "@/components/cards/CardAlertStock";
 import { authOption } from "@/lib/auth"
 import { getServerSession } from "next-auth"
 

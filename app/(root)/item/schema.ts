@@ -6,7 +6,7 @@ export const itemSchema = z.object({
     name: z.string().min(1, {message: 'Name required'}),
     min: z.coerce.number().nonnegative(),
     max: z.coerce.number().nonnegative(),
-    stock: z.coerce.number().nonnegative(),
+    stock: z.coerce.number(),
     unit: z.nativeEnum(Unit)
 });
 

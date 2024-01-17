@@ -15,6 +15,7 @@ import {
     DotsHorizontalIcon,
 } from "@radix-ui/react-icons"
 import { format } from "date-fns"
+import { DataTableRowActions } from "./data-table-row-actions"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -51,26 +52,6 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original
- 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Detail</DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    }
-    }
+    cell: ({ row }) => <DataTableRowActions row={row}/>
+  }
 ]

@@ -1,9 +1,9 @@
+"use client"
 
 import { DialogHeader, DialogTitle } from "../ui/dialog"
 import { StockFormType } from "@/lib/validations/stock";
 import StockForm from "../forms/StockForm";
 import { StockType } from "@/app/(root)/stock/schema";
-import { ItemType } from "@/app/(root)/item/schema";
 
 type EditProps = {
     stock: StockType;

@@ -1,6 +1,6 @@
 "use client"
 
-import { useForm } from 'react-hook-form' ; 
+import { useFieldArray, useForm } from 'react-hook-form' ; 
 import {
     Form,   
     FormControl,
@@ -30,18 +30,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React, { ReactNode, useEffect, useState } from "react";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { ItemType } from '@/app/(root)/item/schema';
-import { StockFormType, stockFormSchema } from '@/lib/validations/stock';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '../ui/calendar';
 
 import { format } from "date-fns"
-import { cn } from "@/lib/utils"
-import { StockType } from '@/app/(root)/stock/schema';
+import { OrderFormType, orderFormSchema } from '@/lib/validations/order';
+import { OrderType } from '@/app/(root)/order/schema';
+import { cn } from '@/lib/utils';
+import { objectUtil } from 'zod';
 
 
 interface Props {
-    stock?: StockType;
+    order?: OrderFormType;
     btnTitle: string;
     children?: ReactNode,
     submitHandler: Function,
@@ -66,7 +67,7 @@ async function getItems(): Promise<ItemType[]> {
   return data.data;
 }
 
-const StockForm =  ({ stock, btnTitle, submitHandler, showActionToggle }: Props) => {
+const OrderForm =  ({ order, btnTitle, submitHandler, showActionToggle }: Props) => {
   const router = useRouter() ;
   const { toast } = useToast()
 
@@ -80,16 +81,23 @@ const StockForm =  ({ stock, btnTitle, submitHandler, showActionToggle }: Props)
   }, []);
 
   const form = useForm({
-      resolver: zodResolver(stockFormSchema),
+      resolver: zodResolver(orderFormSchema),
       defaultValues: {
-          item: stock?.itemId ?? 1,
-          stock: stock?.stockIn ?? 0,
-          dateIn: stock?.dateIn ?? new Date(),
+        buyer: order?.buyer ?? '',
+        order: order?.order ?? [{item: 0, qty: 0}],
+        date: order?.date ?? new Date(),
       }
   }) ;
 
+  const { register, control } = form ;
+  
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'order',
+  });
 
-  async function onSubmit(values : StockFormType) {
+
+  async function onSubmit(values : OrderFormType) {
     const response = await submitHandler(values) ;
 
     if(response.ok) {
@@ -116,37 +124,28 @@ const StockForm =  ({ stock, btnTitle, submitHandler, showActionToggle }: Props)
         >
           <FormField
             control={form.control}
-            name='item'
+            name='buyer'
             render={({ field }) => (
               <FormItem className='grid grid-cols-4 items-center gap-4'>
                 <FormLabel className='text-dark-1 text-right'>
-                  Item
+                  Buyer
                 </FormLabel>
                 <FormControl>
-                  <Select defaultValue={`${field.value}`} onValueChange={field.onChange}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select a unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                      <SelectLabel>Item</SelectLabel>
-                      {items.map((item) => (
-                          <SelectItem key={item.id} value={`${item.id}`}>
-                              {item.name}
-                          </SelectItem>
-                      ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select> 
+                  <Input
+                    type='string'
+                    className='col-span-3'
+                    placeholder="Buyer"
+                    {...field}
+                  />
                 </FormControl>
-                <FormMessage className='col-span-4 text-right'/>
+                <FormMessage className='col-span-4 text-right' />
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
-            name='dateIn'
+            name='date'
             render={({ field }) => (
               <FormItem className='grid grid-cols-4 items-center gap-4'>
                 <FormLabel className='text-dark-1 text-right'>
@@ -158,7 +157,7 @@ const StockForm =  ({ stock, btnTitle, submitHandler, showActionToggle }: Props)
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
+                          "w-full col-span-3 pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -187,27 +186,65 @@ const StockForm =  ({ stock, btnTitle, submitHandler, showActionToggle }: Props)
               </FormItem>
             )}
           />
+          
+          <h3>Order list</h3>
+          {fields.map((field, index) => (
+            <div key={field.id} className='grid grid-cols-6 gap-3 '>
+              <FormField
+                control={form.control}
+                name={`order.${index}.item`} 
+                render={({ field }) => (
+                  <FormItem className='col-span-3' >
+                    <FormControl >
+                      <Select  defaultValue={`${field.value}`} onValueChange={field.onChange}>
+                        <SelectTrigger >
+                          <SelectValue placeholder="Select a item" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                          <SelectLabel>Item</SelectLabel>
+                          {items.map((item) => (
+                              <SelectItem key={item.id} value={`${item.id}`}>
+                                  {item.name}
+                              </SelectItem>
+                          ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select> 
+                    </FormControl>
+                    <FormMessage className='col-span-4 text-right'/>
+                  </FormItem>
+                )}/>
+                
+                <FormField
+                  control={form.control}
+                  name={`order.${index}.qty`}
+                  render={({ field }) => (
+                    <FormItem className='col-span-2' >
+                      <FormControl>
+                        <Input
+                          type='number'
+                          className=''
+                          placeholder="Stock"
+                          min={1}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage className='w-full text-right' />
+                    </FormItem>
+                  )}
+                />
 
-          <FormField
-            control={form.control}
-            name='stock'
-            render={({ field }) => (
-              <FormItem className='grid grid-cols-4 items-center gap-4'>
-                <FormLabel className='text-dark-1 text-right'>
-                  Stock
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type='number'
-                    className='col-span-3'
-                    placeholder="Stock"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className='col-span-4 text-right' />
-              </FormItem>
-            )}
-          />
+              <Button onClick={() => remove(index)} variant={'outline'} disabled={(index < 1 )}>X</Button>
+            
+            </div>
+          ))} 
+          
+          
+
+          <Button type="button" className='w-1/3 float-end' disabled={(items.length === fields.length)} onClick={() => append({ item: 0, qty: 0 })}>
+            Add new item
+          </Button> 
 
           
         </form>
@@ -218,7 +255,9 @@ const StockForm =  ({ stock, btnTitle, submitHandler, showActionToggle }: Props)
             Close
           </Button>
         </DialogClose>
-        <Button type='submit' onClick={form.handleSubmit(onSubmit)} className='bg-red-600 hover:bg-red-700'>
+        <Button type='submit' 
+        onClick={form.handleSubmit(onSubmit)} 
+        className='bg-red-600 hover:bg-red-700'>
           {btnTitle}
         </Button>
       </DialogFooter>
@@ -226,4 +265,4 @@ const StockForm =  ({ stock, btnTitle, submitHandler, showActionToggle }: Props)
   )
 }
 
-export default StockForm
+export default OrderForm

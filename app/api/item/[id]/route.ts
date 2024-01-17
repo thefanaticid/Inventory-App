@@ -43,17 +43,12 @@ export async function DELETE(req: Request, { params }: { params: { id: number } 
     try {
         const { id } = params ;
 
-        // Delete DetailOrder records
-        await db.detailOrder.deleteMany({
-            where: {
-                itemId: parseInt(`${id}`)
-            }
-        });
+
         
         // Delete Stock records
         await db.stock.deleteMany({
             where: {
-             itemId: parseInt(`${id}`)
+                itemId: parseInt(`${id}`)
             }
         });
 

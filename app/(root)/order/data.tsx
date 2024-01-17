@@ -1,9 +1,9 @@
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { StockType } from "./schema";
+import { OrderType } from "./schema";
 
-async function getData(): Promise<StockType[]> {
-  const res =  await fetch('http://localhost:3000/api/stock',
+async function getData(): Promise<OrderType[]> {
+  const res =  await fetch('http://localhost:3000/api/order',
     {
       method: 'GET',
       headers: {
@@ -21,7 +21,7 @@ async function getData(): Promise<StockType[]> {
 }
 
 
-const TableStock = async () => {
+const TableOrder = async () => {
   const data = await getData() ;
   // const [itemData, setItemData] = useState<ItemType[]>([]);
   // useEffect(() => {
@@ -35,4 +35,4 @@ const TableStock = async () => {
   return <DataTable data={data} columns={columns} />
 }
 
-export default TableStock
+export default TableOrder
