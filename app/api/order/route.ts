@@ -57,42 +57,40 @@ export async function POST(req: Request) {
         const  { buyer, order, date } = orderFormSchema.parse(body) ; 
     
         // Mulai transaksi
-        const newOrder = await db.$transaction([
-            db.order.create({
+        const newOrder = await db.order.create({
             data: {
                 buyer,
-                orderDate: new Date(date),
+                orderDate: date,
                 // asumsikan createdBy adalah ID pengguna yang sedang login
                 createdBy: 1,
+                detail: {
+                    create: [
+                      ...order.map((order) => (
+                        {
+                            itemId: order.item,
+                            quantity: order.qty
+                        }
+                      )),
+                    ],
+                }
             },
-            }),
-        ]);
+            include: {
+                detail: true,
+            }
+        }) ;
 
-        const detailOrders = order.map(({ item: itemId, qty: quantity }) => ({
-            orderId: newOrder[0].id,
-            itemId,
-            quantity,
-        }));
+        // Memperbarui stock setiap item yang diorder
+        newOrder.detail.forEach(async (detail) => {
 
-        await db.detailOrder.createMany({
-            data: detailOrders,
+            await db.item.update({
+                where: { id: detail.itemId },
+                data: { stock : {
+                    decrement: detail.quantity
+                } },
+            });
+        
         });
 
-        for (let i = 0; i < order.length; i++) {
-            const { item: itemId, qty: quantity } = order[i];
-
-            // Mengurangi stok item
-            const item = await db.item.findUnique({ where: { id: itemId } });
-            await db.item.update({
-                where: { id: itemId },
-                data: { 
-                    stock: {
-                        decrement: quantity
-                    }
-                }
-            });
-        }
-    
        return NextResponse.json({status: true, data: newOrder }, {status: 201}) ;
        
     } catch(error) {
